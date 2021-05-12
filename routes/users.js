@@ -1,25 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const { getAllUsers, getUserById, createUser } = require('../controllers/users');
 
-const models = require('../models');
+router.get('/', getAllUsers);
 
-router.get('/', async (req, res) => {
-  const users = await models.Users.findAll();
-  res.json(users);
-});
+router.get('/:id', getUserById);
 
-router.get('/:id', async (req, res) => {
-  console.log(await models.Users.findOne());
-  return res.json({});
-  try {
-    const { id } = req.params;
-    const user = await models.Users.findByPk(id);
-    if (!user) throw Error('User not found');
-    res.json(user);
-  } catch (e) {
-    console.log(e);
-    res.send(e.message);
-  }
-});
+router.post('/', createUser);
 
 module.exports = router;

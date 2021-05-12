@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npx sequelize-cli db:migrate && nodemon app.js"
+    "dev": "npx sequelize-cli db:migrate && nodemon app.js"
   },
   "dependencies": {
     "dotenv": "^8.2.0",

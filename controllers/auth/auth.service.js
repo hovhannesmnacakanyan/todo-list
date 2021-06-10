@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
+const { createUser } = require('../users/user.service.js');
 
-const register = async (req, res) => {};
+const register = async (req, res, models) => {
+  await createUser(req, res, models);
+};
 
 const login = async (req, res, models) => {
   const { email, password } = req.body;

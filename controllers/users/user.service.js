@@ -21,7 +21,9 @@ const getUserById = async (req, res, models) => {
     const user = await models.users.findByPk(id);
 
     if (!user) {
-      return res.status(404).json({ error: `User with the specified ID: ${id} does not exists` });
+      return res
+        .status(404)
+        .json({ error: `User with the specified ID: ${id} does not exists` });
     }
 
     return res.status(200).json({ user });
@@ -38,7 +40,9 @@ const createUser = async (req, res, models) => {
     });
 
     if (userByEmail) {
-      return res.status(404).json({ error: `User with this email: "${email}" already exists` });
+      return res
+        .status(404)
+        .json({ error: `User with this email: "${email}" already exists` });
     }
 
     bcrypt.hash(password, salt, async (error, hashPassword) => {
@@ -46,7 +50,12 @@ const createUser = async (req, res, models) => {
         return res.status(404).json({ error: error.message });
       }
 
-      const user = await models.users.create({ firstName, lastName, email, password: hashPassword });
+      const user = await models.users.create({
+        firstName,
+        lastName,
+        email,
+        password: hashPassword,
+      });
 
       return res.status(200).json({ user });
     });

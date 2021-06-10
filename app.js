@@ -14,4 +14,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 
-app.listen(PORT, () => console.log(`Server is run in http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server is run in http://localhost:${PORT}`),
+);

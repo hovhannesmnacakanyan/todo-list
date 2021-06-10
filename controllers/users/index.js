@@ -1,11 +1,9 @@
 const bcrypt = require('bcrypt');
 const salt = 10;
 
-const { users } = require('../../models');
-
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, models) => {
   try {
-    const allUsers = await users.findAll();
+    const allUsers = await models.users.findAll();
 
     if (!allUsers) {
       return res.status(404).json({ error: `Users does not exists` });
@@ -17,10 +15,10 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, models) => {
   try {
     const { id } = req.params;
-    const user = await users.findByPk(id);
+    const user = await models.users.findByPk(id);
 
     if (!user) {
       return res.status(404).json({ error: `User with the specified ID: ${id} does not exists` });
@@ -32,14 +30,14 @@ const getUserById = async (req, res) => {
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, models) => {
   try {
     const { firstName, lastName, email, password } = req.body;
-    const isUniqueEmail = await users.findAll({
+    const userByEmail = await models.users.findOne({
       where: { email },
     });
 
-    if (isUniqueEmail.length) {
+    if (userByEmail) {
       return res.status(404).json({ error: `User with this email: "${email}" already exists` });
     }
 
@@ -48,7 +46,7 @@ const createUser = async (req, res) => {
         return res.status(404).json({ error: error.message });
       }
 
-      const user = await users.create({ firstName, lastName, email, password: hashPassword });
+      const user = await models.users.create({ firstName, lastName, email, password: hashPassword });
 
       return res.status(200).json({ user });
     });

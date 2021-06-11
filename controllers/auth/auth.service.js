@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
 const { createUser } = require('../users/user.service.js');
 const {
-  whitespaceValidation,
-  emailValidation,
+  whitespaceValidator,
+  emailValidator,
   passwordValidator,
 } = require('../validation/validation.service');
 
@@ -10,11 +10,11 @@ const register = async (req, res, models) => {
   try {
     const { firstName, lastName, email, password } = req.body;
 
-    whitespaceValidation(firstName, 'First name');
-    whitespaceValidation(lastName, 'Last name');
-    whitespaceValidation(email, 'Email');
-    whitespaceValidation(password, 'Password');
-    emailValidation(email);
+    whitespaceValidator(firstName, 'First name');
+    whitespaceValidator(lastName, 'Last name');
+    whitespaceValidator(email, 'Email');
+    whitespaceValidator(password, 'Password');
+    emailValidator(email);
     passwordValidator(password);
 
     await createUser(req, res, models);

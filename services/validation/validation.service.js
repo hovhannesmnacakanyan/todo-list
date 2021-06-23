@@ -1,6 +1,6 @@
 const PasswordValidator = require('password-validator');
 
-class ValidationService {
+class Validation {
   whitespaceValidator(string = '', field) {
     const trimmedString = string.trim();
 
@@ -12,6 +12,7 @@ class ValidationService {
   }
 
   emailValidator(email) {
+    this.whitespaceValidator(email, 'Email');
     const regexp =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const isValidEmail = regexp.test(String(email).toLowerCase());
@@ -24,6 +25,8 @@ class ValidationService {
   }
 
   passwordValidator(password) {
+    this.whitespaceValidator(password, 'Password');
+
     const schema = new PasswordValidator();
 
     schema
@@ -64,4 +67,4 @@ class ValidationService {
   }
 }
 
-module.exports = ValidationService;
+module.exports = Validation;

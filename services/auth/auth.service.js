@@ -1,25 +1,14 @@
 const bcrypt = require('bcrypt');
 const Users = require('../users/users.service.js');
-const Validation = require('../validation/validation.service');
 
 class Auth {
   constructor(models) {
     this.models = models;
   }
 
-  async register(req, res) {
-    const validationService = new Validation();
+  async register(firstName, lastName, email, password) {
     const usersService = new Users(this.models);
     try {
-      const { firstName, lastName, email, password } = req.body;
-
-      validationService.whitespaceValidator(firstName, 'First name');
-      validationService.whitespaceValidator(lastName, 'Last name');
-      validationService.whitespaceValidator(email, 'Email');
-      validationService.whitespaceValidator(password, 'Password');
-      validationService.emailValidator(email);
-      validationService.passwordValidator(password);
-
       return await usersService.createUser(
         firstName,
         lastName,
@@ -27,7 +16,7 @@ class Auth {
         password,
       );
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      throw new Error(error.message);
     }
   }
 

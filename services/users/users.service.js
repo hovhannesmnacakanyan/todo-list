@@ -1,41 +1,40 @@
 const bcrypt = require('bcrypt');
-const salt = 10;
 
 class Users {
   constructor(models) {
     this.models = models;
   }
-  async getAllUsers(req, res) {
-    try {
-      const allUsers = await this.models.users.findAll();
 
-      if (!allUsers) {
-        return res.status(404).json({ error: `Users does not exists` });
+  async getAllUsers() {
+    try {
+      const users = await this.models.users.findAll();
+
+      if (!users.length) {
+        throw new Error(`Users does not exists`);
       }
 
-      return res.status(200).json({ users: allUsers });
+      return users;
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      throw new Error(error.message);
     }
   }
-  async getUserById(req, res) {
+
+  async getUserById(id) {
     try {
-      const { id } = req.params;
       const user = await this.models.users.findByPk(id);
 
       if (!user) {
-        return res
-          .status(404)
-          .json({ error: `User with the specified ID: ${id} does not exists` });
+        throw new Error(`User with the specified ID: ${id} does not exists`);
       }
 
-      return res.status(200).json({ user });
+      return user;
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      throw new Error(error.message);
     }
   }
 
   async createUser(firstName, lastName, email, password) {
+    const salt = 10;
     try {
       const userByEmail = await this.models.users.findOne({
         where: { email },
@@ -45,20 +44,16 @@ class Users {
         throw new Error(`User with this email: "${email}" already exists`);
       }
 
-      bcrypt.hash(password, salt, async (error, hashPassword) => {
-        if (error) {
-          throw new Error(error.message);
-        }
+      const hashPassword = await bcrypt.hash(password, salt);
 
-        const user = await this.models.users.create({
-          firstName,
-          lastName,
-          email,
-          password: hashPassword,
-        });
-
-        return user;
+      const user = await this.models.users.create({
+        firstName,
+        lastName,
+        email,
+        password: hashPassword,
       });
+
+      return user;
     } catch (error) {
       throw new Error(error.message);
     }
